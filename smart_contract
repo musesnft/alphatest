@@ -298,3 +298,24 @@ contract('NFTMaster', ([dev, curator, artist, buyer0, buyer1, feeTo, randomGuy, 
     assert.equal(buyer1Count, 60);
   });
 });
+// Trigger randomness (mock), 3 times
+    await this.linkAccessor.triggerRandomness({from: dev});
+    await this.linkAccessor.triggerRandomness({from: dev});
+    await this.linkAccessor.triggerRandomness({from: dev});
+
+    // Check for result.
+    let buyer0Count = 0;
+    let buyer1Count = 0;
+    for (let i = 0; i < 100; ++i) {
+      const winner = await this.nftMaster.getWinner(collectionId, i, {from: randomGuy});
+      if (winner == buyer0) {
+        ++buyer0Count;
+      } else if (winner == buyer1) {
+        ++buyer1Count;
+      }
+    }
+
+    assert.equal(buyer0Count, 40);
+    assert.equal(buyer1Count, 60);
+  });
+});
